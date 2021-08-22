@@ -38,7 +38,15 @@ class auto_battle:
         self.select_card3_posY = 0
 
         # menu
-        self.check_png_path = './read_image/battle_menu.png'
+        self.check_master_path = './read_image/master.png'
+        # 獲得EXPの画像
+        self.check_exp_path = './read_image/battle_exp.png'
+        # 獲得絆の画像
+        self.check_kizuna_path = './read_image/battle_kizuna.png'
+        # 連続出撃の画像
+        self.check_next_battle_path = './read_image/next_battle.png'
+        # 次への画像
+        self.check_next_button_path = './read_image/next_button.png'
     
     # マクロ(クリック位置)を登録する処理
     def regist_click_posission(self):
@@ -160,7 +168,7 @@ class auto_battle:
     # スキル選択の場所を記録
     def save_skill_file(self):
         save_string = ''
-        save_string = str(self.battle1_skill_num) + '\n'
+        save_string = str(self.battle1_skill_num - 1) + '\n'
         for (x_posision, y_posision, wait) in zip(self.battle1_Xposision_list, self.battle1_Yposision_list, self.battle1_wait):
             save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
 
@@ -243,10 +251,10 @@ class auto_battle:
         time.sleep(float(wait))
 
     # 待ち処理
-    def wait_battle(self):
+    def wait_battle(self,image_path):
         # 表示待ち
         while(1):
-            if(pyautogui.locateOnScreen(self.check_png_path, confidence=0.9) != None):
+            if(pyautogui.locateOnScreen(image_path, confidence=0.9) != None):
                 break
 
     # カードを開いて選択する処理
@@ -262,34 +270,34 @@ class auto_battle:
     # 登録したマクロを開始する
     def run_battle(self):
         # 表示待ち
-        self.wait_battle()
+        self.wait_battle(self.check_master_path)
         
         # バトル1をすすめる
         for (x_posision, y_posision, wait) in zip(self.battle1_Xposision_list, self.battle1_Yposision_list, self.battle1_wait):
             self.move_click(x_posision, y_posision, wait)
 
         # カードを選択する
-        self.wait_battle()
+        self.wait_battle(self.check_master_path)
         self.select_card()
 
         # 表示待ち
-        self.wait_battle()
+        self.wait_battle(self.check_master_path)
 
         # バトル2をすすめる
         for (x_posision, y_posision, wait) in zip(self.battle2_Xposision_list, self.battle2_Yposision_list, self.battle2_wait):
             self.move_click(x_posision, y_posision, wait)
         
-        self.wait_battle()
+        self.wait_battle(self.check_master_path)
         self.select_card()
 
         # 表示待ち
-        self.wait_battle()
+        self.wait_battle(self.check_master_path)
 
         # バトル3をすすめる
         for (x_posision, y_posision, wait) in zip(self.battle3_Xposision_list, self.battle3_Yposision_list, self.battle3_wait):
             self.move_click(x_posision, y_posision, wait)
         
-        self.wait_battle()
+        self.wait_battle(self.check_master_path)
         self.select_card()
 
         # TODO: 終了したあとの処理(作成途中)
@@ -299,28 +307,36 @@ class auto_battle:
         # フレンドを選ぶ処理
 
         # ↓リザルトを進める処理の作りかけ
+        self.wait_battle(self.check_kizuna_path)
+        self.wait_battle(self.check_master_path)
+        self.wait_battle(self.check_next_button_path)
+        self.wait_battle(self.check_next_battle_path)
+        
+        # 獲得絆画面を進める
         while(1):
-            locate_obj = pyautogui.locateOnScreen('./read_image/battle_kiduna.png', confidence=0.9)
+            locate_obj = pyautogui.locateOnScreen(self.check_kizuna_path, confidence=0.9)
             if(locate_obj != None):
                 pyautogui.click(locate_obj.width,locate_obj.height)
                 break
         
-
+        # マスターEXP画面を進める
         while(1):
-            locate_obj = pyautogui.locateOnScreen('./read_image/battle_exp.png', confidence=0.9)
+            locate_obj = pyautogui.locateOnScreen(self.check_master_path, confidence=0.9)
             if(locate_obj != None):
                 pyautogui.click(locate_obj.width,locate_obj.height)
                 break
-
+        # 次へボタンをクリックする
         while(1):
-            locate_obj = pyautogui.locateOnScreen('./read_image/next_button.png', confidence=0.9)
+            locate_obj = pyautogui.locateOnScreen(self.check_next_button_path, confidence=0.9)
             if(locate_obj != None):
                 pyautogui.click(locate_obj.width,locate_obj.height)
                 break
             
+        # 連続出撃をクリック
         while(1):
-            locate_obj = pyautogui.locateOnScreen('./read_image/next_battle.png', confidence=0.9)
+            locate_obj = pyautogui.locateOnScreen(self.check_next_battle_path, confidence=0.9)
             if(locate_obj != None):
                 pyautogui.click(locate_obj.width,locate_obj.height)
                 break
 
+        

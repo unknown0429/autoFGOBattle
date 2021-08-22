@@ -37,16 +37,25 @@ class auto_battle:
         self.select_card3_posX = 0
         self.select_card3_posY = 0
 
-        # menu
-        self.check_master_path = './read_image/master.png'
+        # バトル中の画像
+        self.check_master_path = './read_image/battle/master.png'
+
+        # リザルト中の画像
+        # 連続出撃の画像
+        self.check_next_battle_path = './read_image/result/next_battle.png'
+        # 次への画像
+        self.check_next_button_path = './read_image/result/next_button.png'
+
+        # フレンド検索の画像
+        self.check_battle_start = './read_image/friend_search/battle_start.png'
+        self.check_select_friend = './read_image/friend_search/select_friend.png'
+        self.check_yes_button = './read_image/friend_search/yes_button.png'
+        self.check_list_update_button = './read_image/friend_search/friend_list_update.png'
+
         # 獲得EXPの画像
         self.check_exp_path = './read_image/battle_exp.png'
         # 獲得絆の画像
         self.check_kizuna_path = './read_image/battle_kizuna.png'
-        # 連続出撃の画像
-        self.check_next_battle_path = './read_image/next_battle.png'
-        # 次への画像
-        self.check_next_button_path = './read_image/next_button.png'
     
     # マクロ(クリック位置)を登録する処理
     def regist_click_posission(self):
@@ -120,7 +129,7 @@ class auto_battle:
             self.battle2_wait.append(wait_time)
             self.battle2_skill_num +=1
 
-            print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle1_skill_num))
+            print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle2_skill_num))
             is_posision_save=input()
 
         print('バトル2登録完了')
@@ -172,11 +181,11 @@ class auto_battle:
         for (x_posision, y_posision, wait) in zip(self.battle1_Xposision_list, self.battle1_Yposision_list, self.battle1_wait):
             save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
 
-        save_string = save_string + str(self.battle2_skill_num) + '\n'
+        save_string = save_string + str(self.battle2_skill_num - 1) + '\n'
         for (x_posision, y_posision, wait) in zip(self.battle2_Xposision_list, self.battle2_Yposision_list, self.battle2_wait):
             save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
 
-        save_string = save_string + str(self.battle3_skill_num) + '\n'
+        save_string = save_string + str(self.battle3_skill_num - 1) + '\n'
         for (x_posision, y_posision, wait) in zip(self.battle3_Xposision_list, self.battle3_Yposision_list, self.battle3_wait):
             save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
 
@@ -303,40 +312,55 @@ class auto_battle:
         # TODO: 終了したあとの処理(作成途中)
 
         # リザルト画面を進める処理
-
-        # フレンドを選ぶ処理
-
-        # ↓リザルトを進める処理の作りかけ
-        self.wait_battle(self.check_kizuna_path)
-        self.wait_battle(self.check_master_path)
-        self.wait_battle(self.check_next_button_path)
-        self.wait_battle(self.check_next_battle_path)
-        
-        # 獲得絆画面を進める
-        while(1):
-            locate_obj = pyautogui.locateOnScreen(self.check_kizuna_path, confidence=0.9)
-            if(locate_obj != None):
-                pyautogui.click(locate_obj.width,locate_obj.height)
-                break
-        
-        # マスターEXP画面を進める
-        while(1):
-            locate_obj = pyautogui.locateOnScreen(self.check_master_path, confidence=0.9)
-            if(locate_obj != None):
-                pyautogui.click(locate_obj.width,locate_obj.height)
-                break
         # 次へボタンをクリックする
         while(1):
+            pyautogui.click()
             locate_obj = pyautogui.locateOnScreen(self.check_next_button_path, confidence=0.9)
             if(locate_obj != None):
-                pyautogui.click(locate_obj.width,locate_obj.height)
+                pyautogui.moveTo(locate_obj.left,locate_obj.top)
+                pyautogui.click()
                 break
             
         # 連続出撃をクリック
         while(1):
             locate_obj = pyautogui.locateOnScreen(self.check_next_battle_path, confidence=0.9)
             if(locate_obj != None):
-                pyautogui.click(locate_obj.width,locate_obj.height)
+                pyautogui.moveTo(locate_obj.left,locate_obj.top)
+                pyautogui.click()
                 break
 
-        
+    # フレンドを選択して連続出撃する
+    def run_select_friend(self):
+        time.sleep(1)
+        is_find = False
+
+        # フレンドを選ぶ処理
+        while(is_find == False):
+            for i in range(5):
+                time.sleep(0.5)
+                # 対象のフレンドを探す
+                f = pyautogui.locateOnScreen(self.check_select_friend, confidence=0.9)
+                print(f)
+                # 見つかった場合
+                if(f != None):
+                    pyautogui.moveTo(f.left,f.top)
+                    pyautogui.click()
+                    is_find = True
+                    break
+                # 見つからなかった場合
+                else:
+                    # リストをドラッグする
+                    pyautogui.moveTo(self.battle_start_posX+50,self.battle_start_posY)
+                    time.sleep(1)
+                    pyautogui.drag(0,-300,1)
+            # フレンドリストを更新
+            if(is_find == False):
+                list_update = pyautogui.locateOnScreen(self.check_list_update_button,confidence=0.9)
+                pyautogui.moveTo(list_update.left,list_update.top)
+                pyautogui.click()
+                time.sleep(1)
+                yes_b = pyautogui.locateOnScreen(self.check_yes_button,confidence=0.8)
+                print(yes_b)
+                pyautogui.moveTo(yes_b.left,yes_b.top)
+                pyautogui.click()
+        time.sleep(2)

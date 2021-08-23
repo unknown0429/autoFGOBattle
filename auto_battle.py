@@ -1,5 +1,6 @@
 import time
 import pyautogui
+import win32gui
 
 class auto_battle:
 
@@ -37,6 +38,16 @@ class auto_battle:
         self.select_card3_posX = 0
         self.select_card3_posY = 0
 
+        # サーヴァント1のスキルの位置
+        self.servant1 = []
+        self.servant2 = []
+        self.servant3 = []
+
+        # バトルカードの位置
+
+        # スキル対象にするサーヴァントの位置
+        self.target_servant = []
+
         # バトル中の画像
         self.check_master_path = './read_image/battle/master.png'
 
@@ -57,6 +68,20 @@ class auto_battle:
         # 獲得絆の画像
         self.check_kizuna_path = './read_image/battle_kizuna.png'
     
+    # def regist_config(self):
+    #     pass
+    #     # 対象のウィンドウのサイズ取得
+    #     # 対象のウィンドウの位置取得
+        
+    #     # バトル画面の設定
+    #     # サーヴァント1機目のスキル位置の設定
+    #     # サーヴァント2機目のスキル位置の設定
+    #     # サーヴァント3機目のスキル位置の設定
+    #     # スキル対象サーヴァントにするの位置設定
+
+    #     # バトル
+
+
     # マクロ(クリック位置)を登録する処理
     def regist_click_posission(self):
         print('バトルスタートボタンの位置設定(aを入力してEnterで登録)')
@@ -248,11 +273,6 @@ class auto_battle:
             self.select_card3_posY = int(pos_y)
 
 
-    def test(self):
-        # バトル1をすすめる
-        for (x_posision, y_posision, wait) in zip(self.battle1_Xposision_list, self.battle1_Yposision_list, self.battle1_wait):
-            self.move_click(x_posision, y_posision, wait)
-
     # 指定の位置に移動してクリックする処理
     def move_click(self,x_pos,y_pos,wait):
         pyautogui.moveTo(x_pos, y_pos)
@@ -320,7 +340,7 @@ class auto_battle:
                 pyautogui.moveTo(locate_obj.left,locate_obj.top)
                 pyautogui.click()
                 break
-            
+        
         # 連続出撃をクリック
         while(1):
             locate_obj = pyautogui.locateOnScreen(self.check_next_battle_path, confidence=0.9)

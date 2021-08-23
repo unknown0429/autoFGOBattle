@@ -1,6 +1,11 @@
 # autoFGOBattle
 自動で周回したい
 
+---
+### 使用しているライブラリ
+- pyautogui
+- win32gui(pywin32)
+
 ### フォルダの構成
 ---
 ##### posision

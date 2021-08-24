@@ -1,0 +1,27 @@
+{
+    "window_name": "",
+    "window_pos": {
+        "left": "",
+        "top": "",
+        "right": "",
+        "bottom": ""
+    },
+    "battle": {
+        "attack": {},
+        "attack_card": [],
+        "NP": []
+    },
+    "master_skill": [],
+    "servant1": {
+        "skill": [],
+        "target": {}
+    },
+    "servant2": {
+        "skill": [],
+        "target": {}
+    },
+    "servant3": {
+        "skill": [],
+        "target": {}
+    }
+}

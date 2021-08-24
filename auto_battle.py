@@ -1,52 +1,15 @@
 import time
+import json
 import pyautogui
+from pyscreeze import locateOnScreen
 import win32gui
 
 class auto_battle:
 
     # コンストラクタ
     def __init__(self):
-        # スキルクリック位置の横座標
-        self.battle1_Xposision_list = []
-        self.battle2_Xposision_list = []
-        self.battle3_Xposision_list = []
-
-        # スキルクリック位置の縦座標
-        self.battle1_Yposision_list = []
-        self.battle2_Yposision_list = []
-        self.battle3_Yposision_list = []
-
-        # クリック後の待ち時間
-        self.battle1_wait = []
-        self.battle2_wait = []
-        self.battle3_wait = []
-
-        # クリック数の記録
-        self.battle1_skill_num = 1
-        self.battle2_skill_num = 1
-        self.battle3_skill_num = 1
-
-        # バトルスタートボタンの位置
-        self.battle_start_posX = 0
-        self.battle_start_posY = 0
-
-        # 選択するカードの位置
-        self.select_card1_posX = 0
-        self.select_card1_posY = 0
-        self.select_card2_posX = 0
-        self.select_card2_posY = 0
-        self.select_card3_posX = 0
-        self.select_card3_posY = 0
-
-        # サーヴァント1のスキルの位置
-        self.servant1 = []
-        self.servant2 = []
-        self.servant3 = []
-
-        # バトルカードの位置
-
-        # スキル対象にするサーヴァントの位置
-        self.target_servant = []
+        # 設定内容
+        self.option = []
 
         # バトル中の画像
         self.check_master_path = './read_image/battle/master.png'
@@ -68,210 +31,93 @@ class auto_battle:
         # 獲得絆の画像
         self.check_kizuna_path = './read_image/battle_kizuna.png'
     
-    # def regist_config(self):
-    #     pass
-    #     # 対象のウィンドウのサイズ取得
-    #     # 対象のウィンドウの位置取得
+    # 位置情報を設定する
+    def regist_config(self):
+        with open('./posision/save_template.json','r') as f:
+            save_string = f.read()
+        save_json = json.loads(save_string)
+        # 対象のウィンドウの位置取得
+        print("対象のウィンドウの位置を座標します")
+        window_name = input('対象のウィンドウ名を入力してください:')
+        target_window = win32gui.FindWindow(None, window_name)
+        if(target_window != 0):
+            locate_obj = win32gui.GetWindowRect(target_window)
+            save_json['window_name'] = window_name
+            save_json['window_pos']['left'] = locate_obj[0]
+            save_json['window_pos']['top'] = locate_obj[1]
+            save_json['window_pos']['right'] = locate_obj[2]
+            save_json['window_pos']['bottom'] = locate_obj[3]
+            print("ウィンドウの座標を取得できました")
+        else:
+            print("ウィンドウの座標を取得できませんでした")
+            return
         
-    #     # バトル画面の設定
-    #     # サーヴァント1機目のスキル位置の設定
-    #     # サーヴァント2機目のスキル位置の設定
-    #     # サーヴァント3機目のスキル位置の設定
-    #     # スキル対象サーヴァントにするの位置設定
-
-    #     # バトル
-
-
-    # マクロ(クリック位置)を登録する処理
-    def regist_click_posission(self):
-        print('バトルスタートボタンの位置設定(aを入力してEnterで登録)')
-        input()
+        # バトル画面の設定
+        # アタックカードの設定
+        print('Attackの設定')
+        input('Attackの位置設定(aを入力してEnterで登録):')
         locate_obj = pyautogui.position()
-        self.battle_start_posX = locate_obj.x
-        self.battle_start_posY = locate_obj.y
-
-        print('選択するカードの位置設定(aを入力してEnterで登録)')
-        print('1つ目')
-        input()
-        locate_obj = pyautogui.position()
-        self.select_card1_posX = locate_obj.x
-        self.select_card1_posY = locate_obj.y
-
-        print('2つ目')
-        input()
-        locate_obj = pyautogui.position()
-        self.select_card2_posX = locate_obj.x
-        self.select_card2_posY = locate_obj.y
-
-        print('3つ目')
-        input()
-        locate_obj = pyautogui.position()
-        self.select_card3_posX = locate_obj.x
-        self.select_card3_posY = locate_obj.y
-
-        print('バトル1で撃つスキルの設定')
-        is_posision_save=input()
-        print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle1_skill_num))
-        while(is_posision_save == 'a'):
-
+        save_json['battle']['attack'] = {'x':locate_obj.x,'y':locate_obj.y}
+        for i in range(5):
+            input('カード{}枚目の位置'.format(i+1))
             locate_obj = pyautogui.position()
-            self.battle1_Xposision_list.append(locate_obj.x)
-            self.battle1_Yposision_list.append(locate_obj.y)
+            save_json['battle']['attack_card'].append({'x':locate_obj.x,'y':locate_obj.y})
 
-            print('クリック登録：x={}, y={}'.format(locate_obj.x, locate_obj.y))
-            print('待ち時間入力')
-            wait_time = input() 
-            
-            while(wait_time.isascii() == False):
-                print('数値を入力してください')
-                wait_time = input()
-            
-            self.battle1_wait.append(wait_time)
-            self.battle1_skill_num +=1
-
-            print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle1_skill_num))
-            is_posision_save=input()
-
-        print('バトル2登録完了')
-
-        print('バトル2で撃つスキルの設定')
-        is_posision_save=input()
-        print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle2_skill_num))
-        while(is_posision_save == 'a'):
-
+        for i in range(3):
+            input('サーバント{}体目の宝具カードの位置'.format(i+1))
             locate_obj = pyautogui.position()
-            self.battle2_Xposision_list.append(locate_obj.x)
-            self.battle2_Yposision_list.append(locate_obj.y)
+            save_json['battle']['NP'].append({'x':locate_obj.x,'y':locate_obj.y})
 
-            print('クリック登録：x={}, y={}'.format(locate_obj.x, locate_obj.y))
-            print('待ち時間入力')
-            wait_time = input() 
-            
-            while(wait_time.isascii() == False):
-                print('数値を入力してください')
-                wait_time = input()
-            
-            self.battle2_wait.append(wait_time)
-            self.battle2_skill_num +=1
-
-            print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle2_skill_num))
-            is_posision_save=input()
-
-        print('バトル2登録完了')
-
-        print('バトル3で撃つスキルの設定')
-        print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle3_skill_num))
-        is_posision_save=input()
-        while(is_posision_save == 'a'):
-
+        # サーヴァント1機目のスキル位置の設定
+        print('サーヴァント1機目のスキル位置設定')
+        for i in range(3):
+            skill_pos = input('スキル{}の場所設定(aを入力してEnterで登録):'.format(i+1))
             locate_obj = pyautogui.position()
-            self.battle3_Xposision_list.append(locate_obj.x)
-            self.battle3_Yposision_list.append(locate_obj.y)
+            save_json['servant1']['skill'].append({'x':locate_obj.x,'y':locate_obj.y})
+        
+        # サーヴァント2機目のスキル位置の設定
+        print('サーヴァント2機目のスキル位置設定')
+        for i in range(3):
+            skill_pos = input('スキル{}の場所設定(aを入力してEnterで登録):'.format(i+1))
+            locate_obj = pyautogui.position()
+            save_json['servant2']['skill'].append({'x':locate_obj.x,'y':locate_obj.y})
 
-            print('クリック登録：x={}, y={}'.format(locate_obj.x, locate_obj.y))
-            print('待ち時間入力')
-            wait_time = input() 
-            
-            while(wait_time.isascii() == False):
-                print('数値を入力してください')
-                wait_time = input()
-            
-            self.battle3_wait.append(wait_time)
-            self.battle3_skill_num +=1
+        # サーヴァント3機目のスキル位置の設定
+        print('サーヴァント3機目のスキル位置設定')
+        for i in range(3):
+            skill_pos = input('スキル{}の場所設定(aを入力してEnterで登録):'.format(i+1))
+            locate_obj = pyautogui.position()
+            save_json['servant3']['skill'].append({'x':locate_obj.x,'y':locate_obj.y})
+        
+        # スキル対象サーヴァントにするの位置設定
+        print("スキルの対象にする位置の設定")
+        for i in range(3):
+            skill_pos = input('サーヴァント{}の位置(aを入力してEnterで登録):'.format(i+1))
+            locate_obj = pyautogui.position()
+            save_json['servant{}'.format(i+1)]['target'] = {'x':locate_obj.x,'y':locate_obj.y}
 
-            print('クリック{}回目(aを入力してEnterで登録、nを入力で登録終了)'.format(self.battle1_skill_num))
-            is_posision_save=input()
+        # マスタースキルの位置設定
+        print("マスタースキルの位置設定")
+        skill_pos = input('マスタースキルの位置(aを入力してEnterで登録):'.format(i+1))
+        locate_obj = pyautogui.position()
+        save_json['master_skill'].append({'x':locate_obj.x,'y':locate_obj.y})
+        for i in range(3):
+            skill_pos = input('スキル{}の位置(aを入力してEnterで登録):'.format(i+1))
+            locate_obj = pyautogui.position()
+            save_json['master_skill'].append({'x':locate_obj.x,'y':locate_obj.y})
 
-        print('バトル3登録完了')
-
-    # 登録している設定を保存する
-    def save_file(self):
-        self.save_skill_file()
-        self.save_card_select_file()
-
-    # カードセレクトの場所を記録
-    def save_card_select_file(self):
-        save_string = ''
-        save_string = '{},{}\n'.format(self.battle_start_posX,self.battle_start_posY)
-        save_string = save_string + '{},{}\n'.format(self.select_card1_posX,self.select_card1_posY)
-        save_string = save_string + '{},{}\n'.format(self.select_card2_posX,self.select_card2_posY)
-        save_string = save_string + '{},{}\n'.format(self.select_card3_posX,self.select_card3_posY)
-        with open('./posision/save_select.txt','w') as f:
-            f.write(save_string)
-
-    # スキル選択の場所を記録
-    def save_skill_file(self):
-        save_string = ''
-        save_string = str(self.battle1_skill_num - 1) + '\n'
-        for (x_posision, y_posision, wait) in zip(self.battle1_Xposision_list, self.battle1_Yposision_list, self.battle1_wait):
-            save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
-
-        save_string = save_string + str(self.battle2_skill_num - 1) + '\n'
-        for (x_posision, y_posision, wait) in zip(self.battle2_Xposision_list, self.battle2_Yposision_list, self.battle2_wait):
-            save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
-
-        save_string = save_string + str(self.battle3_skill_num - 1) + '\n'
-        for (x_posision, y_posision, wait) in zip(self.battle3_Xposision_list, self.battle3_Yposision_list, self.battle3_wait):
-            save_string = save_string + '{},{},{}\n'.format(x_posision, y_posision,wait)
-
-        with open('./posision/save_skill.txt','w') as f:
-            f.write(save_string)
+        # 設定保存
+        with open('./posision/option.json', 'w') as f:
+            f.write(json.dumps(save_json,indent=4))
+        
+        print("設定完了")
 
     # 設定をロードする
     def read_option(self):
-        self.read_skill_file()
-        self.read_select_file()
-
-    # スキル選択の場所をロード
-    def read_skill_file(self):
-        with open('./posision/save_skill.txt','r') as f:
-            read_string = f.readline().removeprefix('\n')
-            for i in range(int(read_string)):
-                read_string_pos = f.readline().removeprefix('\n')
-                pos_x,pos_y,waitnum = str(read_string_pos).split(',')
-                self.battle1_Xposision_list.append(int(pos_x))
-                self.battle1_Yposision_list.append(int(pos_y))
-                self.battle1_wait.append(float(waitnum))
-
-            read_string = f.readline().removeprefix('\n')
-            for i in range(int(read_string)):
-                read_string_pos = f.readline().removeprefix('\n')
-                pos_x,pos_y,waitnum = str(read_string_pos).split(',')
-                self.battle2_Xposision_list.append(int(pos_x))
-                self.battle2_Yposision_list.append(int(pos_y))
-                self.battle2_wait.append(float(waitnum))
-
-            read_string = f.readline().removeprefix('\n')
-            for i in range(int(read_string)):
-                read_string_pos = f.readline().removeprefix('\n')
-                pos_x,pos_y,waitnum = str(read_string_pos).split(',')
-                self.battle3_Xposision_list.append(int(pos_x))
-                self.battle3_Yposision_list.append(int(pos_y))
-                self.battle3_wait.append(float(waitnum))
-
-    # カードセレクトの場所をロード
-    def read_select_file(self):
-        with open('./posision/save_select.txt','r') as f:
-            read_string = f.readline().removeprefix('\n')
-            pos_x,pos_y = read_string.split(',')
-            self.battle_start_posX = int(pos_x)
-            self.battle_start_posY = int(pos_y)
-
-            read_string = f.readline().removeprefix('\n')
-            pos_x,pos_y = read_string.split(',')
-            self.select_card1_posX = int(pos_x)
-            self.select_card1_posY = int(pos_y)
-
-            read_string = f.readline().removeprefix('\n')
-            pos_x,pos_y = read_string.split(',')
-            self.select_card2_posX = int(pos_x)
-            self.select_card2_posY = int(pos_y)
-
-            read_string = f.readline().removeprefix('\n')
-            pos_x,pos_y = read_string.split(',')
-            self.select_card3_posX = int(pos_x)
-            self.select_card3_posY = int(pos_y)
-
+        read_str = ''
+        with open('./posision/option.json','r') as f:
+            read_str = f.read()
+        self.option = json.loads(read_str)
 
     # 指定の位置に移動してクリックする処理
     def move_click(self,x_pos,y_pos,wait):
@@ -288,13 +134,11 @@ class auto_battle:
 
     # カードを開いて選択する処理
     def select_card(self):
+        pass
         # カードを開く
-        self.move_click(self.battle_start_posX, self.battle_start_posY, 2)
 
         # カードを選択する
-        self.move_click(self.select_card1_posX,self.select_card1_posY, 0.5)
-        self.move_click(self.select_card2_posX,self.select_card2_posY, 0.5)
-        self.move_click(self.select_card3_posX,self.select_card3_posY, 0.5)
+
 
     # 登録したマクロを開始する
     def run_battle(self):

@@ -30,87 +30,10 @@ class auto_battle:
         self.check_exp_path = './read_image/battle_exp.png'
         # 獲得絆の画像
         self.check_kizuna_path = './read_image/battle_kizuna.png'
-    
-    # 位置情報を設定する
-    def regist_config(self):
-        with open('./posision/save_template.json','r') as f:
-            save_string = f.read()
-        save_json = json.loads(save_string)
-        # 対象のウィンドウの位置取得
-        print("対象のウィンドウの位置を座標します")
-        window_name = input('対象のウィンドウ名を入力してください:')
-        target_window = win32gui.FindWindow(None, window_name)
-        if(target_window != 0):
-            locate_obj = win32gui.GetWindowRect(target_window)
-            save_json['window_name'] = window_name
-            save_json['window_pos']['left'] = locate_obj[0]
-            save_json['window_pos']['top'] = locate_obj[1]
-            save_json['window_pos']['right'] = locate_obj[2]
-            save_json['window_pos']['bottom'] = locate_obj[3]
-            print("ウィンドウの座標を取得できました")
-        else:
-            print("ウィンドウの座標を取得できませんでした")
-            return
-        
-        # バトル画面の設定
-        # アタックカードの設定
-        print('Attackの設定')
-        input('Attackの位置設定(aを入力してEnterで登録):')
-        locate_obj = pyautogui.position()
-        save_json['battle']['attack'] = {'x':locate_obj.x,'y':locate_obj.y}
-        for i in range(5):
-            input('カード{}枚目の位置'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['battle']['attack_card'].append({'x':locate_obj.x,'y':locate_obj.y})
 
-        for i in range(3):
-            input('サーバント{}体目の宝具カードの位置'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['battle']['NP'].append({'x':locate_obj.x,'y':locate_obj.y})
-
-        # サーヴァント1機目のスキル位置の設定
-        print('サーヴァント1機目のスキル位置設定')
-        for i in range(3):
-            skill_pos = input('スキル{}の場所設定(aを入力してEnterで登録):'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['servant1']['skill'].append({'x':locate_obj.x,'y':locate_obj.y})
-        
-        # サーヴァント2機目のスキル位置の設定
-        print('サーヴァント2機目のスキル位置設定')
-        for i in range(3):
-            skill_pos = input('スキル{}の場所設定(aを入力してEnterで登録):'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['servant2']['skill'].append({'x':locate_obj.x,'y':locate_obj.y})
-
-        # サーヴァント3機目のスキル位置の設定
-        print('サーヴァント3機目のスキル位置設定')
-        for i in range(3):
-            skill_pos = input('スキル{}の場所設定(aを入力してEnterで登録):'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['servant3']['skill'].append({'x':locate_obj.x,'y':locate_obj.y})
-        
-        # スキル対象サーヴァントにするの位置設定
-        print("スキルの対象にする位置の設定")
-        for i in range(3):
-            skill_pos = input('サーヴァント{}の位置(aを入力してEnterで登録):'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['servant{}'.format(i+1)]['target'] = {'x':locate_obj.x,'y':locate_obj.y}
-
-        # マスタースキルの位置設定
-        print("マスタースキルの位置設定")
-        skill_pos = input('マスタースキルの位置(aを入力してEnterで登録):'.format(i+1))
-        locate_obj = pyautogui.position()
-        save_json['master_skill'].append({'x':locate_obj.x,'y':locate_obj.y})
-        for i in range(3):
-            skill_pos = input('スキル{}の位置(aを入力してEnterで登録):'.format(i+1))
-            locate_obj = pyautogui.position()
-            save_json['master_skill'].append({'x':locate_obj.x,'y':locate_obj.y})
-
-        # 設定保存
-        with open('./posision/option.json', 'w') as f:
-            f.write(json.dumps(save_json,indent=4))
-        
-        print("設定完了")
+    # 画像の認識確認
+    def check_image(self,image_name):
+        return pyautogui.locateOnScreen(image_name)
 
     # 設定をロードする
     def read_option(self):

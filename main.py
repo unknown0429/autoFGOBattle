@@ -1,10 +1,10 @@
 import pyautogui
-from auto_battle import auto_battle
+from auto_controler import auto_controler
 import win32gui
 import json
 
-auto_b = auto_battle()
-auto_b.regist_config()
+controler = auto_controler()
+controler.menu()
 
 
 # 位置設定

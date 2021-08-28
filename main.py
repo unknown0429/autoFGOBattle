@@ -6,9 +6,6 @@ import json
 controler = auto_controler()
 # controler.menu()
 
-with open('./posision/newFile.txt','w') as f:
-    f.write('new string')
-
 # 位置設定
 # auto_b.regist_click_posission()
 

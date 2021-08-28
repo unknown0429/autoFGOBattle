@@ -92,6 +92,25 @@ class auto_controler:
 
     # 周回の設定
     def regist_battle(self):
+        # 周回設定の名前を入力
+        skill_set_name = ''
+        while(skill_set_name == ''):
+            skill_set_name = input('周回設定の名前を入力してください:')
+        
+        # バトル毎の撃つスキルを設定
+        for i in range(3):
+            print('バトル{}のスキル設定')
+            while(1):
+                # スキルを撃つサーヴァントを指定
+                print('スキルを撃つサーヴァントを選んでください')
+                servant_num = input('[1.左のサーヴァント 2.真ん中のサーヴァント 3.右のサーヴァント 4.終了]:')
+                if(servant_num in ('1','2','3')):
+                    # 撃つスキルを設定
+
+                    # 撃つスキルの対象を設定(ない場合の番号選択肢に入れる)
+                    pass
+
+        # 設定内容をファイルを作成して保存
         pass
 
     # 画像認識の確認

@@ -100,23 +100,65 @@ class auto_controler:
         friend_search_path = './read_image/friend_search/'
         result_path = './read_image/result/'
 
-        # TODO:確認する画像の画面を選択(バトル画面、リザルト画面、フレンド選択画面)
+        # 確認する画像の画面を選択(バトル画面、リザルト画面、フレンド選択画面)
+        print('確認する画面を選択してください')
+        select_since = input('[1.バトル画面 2.リザルト画面 3.フレンド選択画面]:')
+        
+        print('画像が検出できるか確認します')
+        if(select_since == '1'):
+            input('バトル画面を表示したらENTERを押してください:')
+            # バトル画面の画像確認
+            check_image_obj = self.auto_b.check_image(battle_path + 'master.png')
+            if(check_image_obj != None):
+                print('検出できました')
+            else:
+                print('検出できませんでした')
 
+        elif(select_since == '2'):
+            input('リザルトの報酬獲得画面を表示したらENTERを押してください:')
+            # 次へボタンを確認
+            check_image_obj = self.auto_b.check_image(result_path + 'next_button.png')
+            if(check_image_obj != None):
+                print('検出できました')
+            else:
+                print('検出できませんでした')
+            
+            input('連続出撃画面を表示したらENTERを押してください:')
+            # 連続出撃ボタンを確認
+            check_image_obj = self.auto_b.check_image(result_path + 'next_battle.png')
+            if(check_image_obj != None):
+                print('検出できました')
+            else:
+                print('検出できませんでした')
+            
+        elif(select_since == '3'):
+            input('フレンド選択画面を表示したらENTERを押してください:')
+            # リスト更新ボタンを確認
+            check_image_obj = self.auto_b.check_image(friend_search_path + 'friend_list_update.png')
+            if(check_image_obj != None):
+                print('検出できました')
+            else:
+                print('検出できませんでした')
+            
+            # 「はい」ボタンを確認
+            input('リスト更新ボタンをクリックしたらENTERを押してください:')
+            check_image_obj = self.auto_b.check_image(friend_search_path + 'yes_button.png')
+            if(check_image_obj != None):
+                print('検出できました')
+            else:
+                print('検出できませんでした')
 
-        # バトル画面の画像確認
-        self.auto_b.check_image(battle_path + 'master.png')
-
-        # フレンド選択画面の画像確認
-        self.auto_b.check_image(friend_search_path + 'battle_start.png')
-        self.auto_b.check_image(friend_search_path + 'friend_list_update.png')
-        self.auto_b.check_image(friend_search_path + 'select_friend.png')
-        self.auto_b.check_image(friend_search_path + 'yes_button.png')
-
-        # リザルト画面の画像確認
-        self.auto_b.check_image(result_path + 'next_battle.png')
-        self.auto_b.check_image(result_path + 'next_button.png')
-
-        pass
+            # 選ぶフレンドを確認
+            check_image_obj = self.auto_b.check_image(friend_search_path + 'select_friend.png')
+            if(check_image_obj != None):
+                print('検出できました')
+            else:
+                print('検出できませんでした')
+        else:
+            print('終了')
+            return
+        
+        return
 
     # コンソール上で選ぶメニューを表示する
     def menu(self):
@@ -129,7 +171,7 @@ class auto_controler:
             elif(menu_number == '2'):
                 self.regist_battle()
             elif(menu_number == '3'):
-                pass
+                self.check_image()
             elif(menu_number == '4'):
                 print('終了します')
                 return 0

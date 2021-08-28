@@ -10,6 +10,7 @@ class auto_battle:
     def __init__(self):
         # 設定内容
         self.option = []
+        self.read_option()
 
         # バトル中の画像
         self.check_master_path = './read_image/battle/master.png'
@@ -31,9 +32,21 @@ class auto_battle:
         # 獲得絆の画像
         self.check_kizuna_path = './read_image/battle_kizuna.png'
 
+    # 設定されてるウィンドウの座標に移動させる
+    def reset_window_pos(self):
+        hwnd = win32gui.FindWindow(None, self.option['window_name'])
+        if(hwnd != 0):
+            width = int(self.option['window_pos']['right']) - int(self.option['window_pos']['left'])
+            height = int(self.option['window_pos']['bottom']) - int(self.option['window_pos']['top'])
+            win32gui.MoveWindow(hwnd, self.option['window_pos']['left'], self.option['window_pos']['top'], width,height, 1)
+
     # 画像の認識確認
     def check_image(self,image_name):
-        return pyautogui.locateOnScreen(image_name)
+        self.reset_window_pos()
+        check_obj = pyautogui.locateOnScreen(image_name,confidence=0.9)
+        if(check_obj != None):
+            pyautogui.moveTo(x=check_obj.left,y=check_obj.top)
+        return check_obj
 
     # 設定をロードする
     def read_option(self):
